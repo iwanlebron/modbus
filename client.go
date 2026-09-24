@@ -38,7 +38,7 @@ func NewClient2(packager Packager, transporter Transporter) Client {
 //  Function code         : 1 byte (0x01)
 //  Byte count            : 1 byte
 //  Coil status           : N* bytes (=N or N+1)
-func (mb *client) ReadCoils(address, quantity uint16) (results []byte, err error) {
+func (mb *client) ReadCoils(address, quantity uint16) (req, resp, results []byte, err error) {
 	if quantity < 1 || quantity > 2000 {
 		err = fmt.Errorf("modbus: quantity '%v' must be between '%v' and '%v',", quantity, 1, 2000)
 		return
@@ -58,6 +58,8 @@ func (mb *client) ReadCoils(address, quantity uint16) (results []byte, err error
 		return
 	}
 	results = response.Data[1:]
+	req=  response.Req
+	resp=  response.Resp
 	return
 }
 
@@ -69,7 +71,7 @@ func (mb *client) ReadCoils(address, quantity uint16) (results []byte, err error
 //  Function code         : 1 byte (0x02)
 //  Byte count            : 1 byte
 //  Input status          : N* bytes (=N or N+1)
-func (mb *client) ReadDiscreteInputs(address, quantity uint16) (results []byte, err error) {
+func (mb *client) ReadDiscreteInputs(address, quantity uint16) (req, resp, results []byte, err error) {
 	if quantity < 1 || quantity > 2000 {
 		err = fmt.Errorf("modbus: quantity '%v' must be between '%v' and '%v',", quantity, 1, 2000)
 		return
@@ -89,6 +91,8 @@ func (mb *client) ReadDiscreteInputs(address, quantity uint16) (results []byte, 
 		return
 	}
 	results = response.Data[1:]
+	req=  response.Req
+	resp=  response.Resp
 	return
 }
 
@@ -100,7 +104,7 @@ func (mb *client) ReadDiscreteInputs(address, quantity uint16) (results []byte, 
 //  Function code         : 1 byte (0x03)
 //  Byte count            : 1 byte
 //  Register value        : Nx2 bytes
-func (mb *client) ReadHoldingRegisters(address, quantity uint16) (results []byte, err error) {
+func (mb *client) ReadHoldingRegisters(address, quantity uint16) (req, resp, results []byte, err error) {
 	if quantity < 1 || quantity > 125 {
 		err = fmt.Errorf("modbus: quantity '%v' must be between '%v' and '%v',", quantity, 1, 125)
 		return
@@ -120,6 +124,8 @@ func (mb *client) ReadHoldingRegisters(address, quantity uint16) (results []byte
 		return
 	}
 	results = response.Data[1:]
+	req=  response.Req
+	resp=  response.Resp
 	return
 }
 
@@ -131,7 +137,7 @@ func (mb *client) ReadHoldingRegisters(address, quantity uint16) (results []byte
 //  Function code         : 1 byte (0x04)
 //  Byte count            : 1 byte
 //  Input registers       : N bytes
-func (mb *client) ReadInputRegisters(address, quantity uint16) (results []byte, err error) {
+func (mb *client) ReadInputRegisters(address, quantity uint16) (req, resp, results []byte, err error) {
 	if quantity < 1 || quantity > 125 {
 		err = fmt.Errorf("modbus: quantity '%v' must be between '%v' and '%v',", quantity, 1, 125)
 		return
@@ -151,6 +157,8 @@ func (mb *client) ReadInputRegisters(address, quantity uint16) (results []byte, 
 		return
 	}
 	results = response.Data[1:]
+	req=  response.Req
+	resp=  response.Resp
 	return
 }
 
@@ -441,6 +449,7 @@ func (mb *client) send(request *ProtocolDataUnit) (response *ProtocolDataUnit, e
 		return
 	}
 	aduResponse, err := mb.transporter.Send(aduRequest)
+
 	if err != nil {
 		return
 	}
@@ -461,6 +470,8 @@ func (mb *client) send(request *ProtocolDataUnit) (response *ProtocolDataUnit, e
 		err = fmt.Errorf("modbus: response data is empty")
 		return
 	}
+	response.Req = aduRequest
+	response.Resp = aduResponse
 	return
 }
 
