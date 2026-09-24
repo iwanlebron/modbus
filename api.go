@@ -9,10 +9,10 @@ type Client interface {
 
 	// ReadCoils reads from 1 to 2000 contiguous status of coils in a
 	// remote device and returns coil status.
-	ReadCoils(address, quantity uint16) (results []byte, err error)
+	ReadCoils(address, quantity uint16) (req, resp, results []byte, err error)
 	// ReadDiscreteInputs reads from 1 to 2000 contiguous status of
 	// discrete inputs in a remote device and returns input status.
-	ReadDiscreteInputs(address, quantity uint16) (results []byte, err error)
+	ReadDiscreteInputs(address, quantity uint16) (req, resp, results []byte, err error)
 	// WriteSingleCoil write a single output to either ON or OFF in a
 	// remote device and returns output value.
 	WriteSingleCoil(address, value uint16) (results []byte, err error)
@@ -24,10 +24,10 @@ type Client interface {
 
 	// ReadInputRegisters reads from 1 to 125 contiguous input registers in
 	// a remote device and returns input registers.
-	ReadInputRegisters(address, quantity uint16) (results []byte, err error)
+	ReadInputRegisters(address, quantity uint16) (req, resp, results []byte, err error)
 	// ReadHoldingRegisters reads the contents of a contiguous block of
 	// holding registers in a remote device and returns register value.
-	ReadHoldingRegisters(address, quantity uint16) (results []byte, err error)
+	ReadHoldingRegisters(address, quantity uint16) (req, resp, results []byte, err error)
 	// WriteSingleRegister writes a single holding register in a remote
 	// device and returns register value.
 	WriteSingleRegister(address, value uint16) (results []byte, err error)
